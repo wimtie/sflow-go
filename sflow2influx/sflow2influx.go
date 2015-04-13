@@ -42,7 +42,6 @@ var MetricFields = [...]string{"IfInOctets", "IfOutOctets", "IfInDiscards", "IfI
 
 var log logger.Log
 
-
 var chunkSize int
 var influxPort int
 var influxHost string
@@ -61,11 +60,11 @@ func main() {
 	flag.StringVar(&influxDB, "d", "", "Database to use")
 	flag.IntVar(&loglvl, "loglevel", 2, "Desired loglevel (ERROR=0, WARN=1, INFO=2, DEBUG=3), default = 2")
 	flag.Parse()
-	log.Warn("chunksize: %d", chunkSize)
-	log.Warn(fmt.Sprintf("influxhost: %s", influxHost))
-	log.Warn(fmt.Sprintf("influxport: %d", influxPort))
-	log.Warn(fmt.Sprintf("influx database: %s", influxDB))
 	log = logger.NewLog(loglvl)
+	log.Warn("chunksize: %d", chunkSize)
+	log.Warn("influxhost: %s", influxHost)
+	log.Warn("influxport: %d", influxPort)
+	log.Warn("influx database: %s", influxDB)
 	run()
 }
 
