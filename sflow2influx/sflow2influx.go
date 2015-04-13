@@ -161,7 +161,7 @@ func insertIntoInflux(counters []Counters) {
 	if err != nil {
 		    log.Error(err)
 	}
-	log.Info("InfluxDB Client: Happy as a hippo! %v, %s\n", dur, ver)
+	log.Info("InfluxDB Client: Happy as a hippo! Ping time: %v, Version: %s", dur, ver)
 	chunk := len(counters)
 	log.Debug("allocate Point slice of size %d", (chunk * len(MetricFields)))
 	pts := make([]client.Point, chunk * len(MetricFields))
