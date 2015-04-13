@@ -146,7 +146,6 @@ func appendPoints(points []client.Point, counters []Counters, i int) {
 }
 
 func insertIntoInflux(counters []Counters) {
-	con := getInfluxClient()
 	chunk := len(counters)
 	log.Debug("allocate Point slice of size %d", (chunk * len(MetricFields)))
 	pts := make([]client.Point, chunk * len(MetricFields))
@@ -159,6 +158,7 @@ func insertIntoInflux(counters []Counters) {
 		Database: influxDB,
 		RetentionPolicy: "default",
 	}
+	con := getInfluxClient()
 	log.Info("InfluxDB Client: start inserting chunk")
 	_, err := con.Write(bps)
 	if err != nil {
