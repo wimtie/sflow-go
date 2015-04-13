@@ -41,6 +41,7 @@ type Counters struct {
 var MetricFields = [...]string{"IfInOctets", "IfOutOctets", "IfInDiscards", "IfInBroadcastPkts", "IfInMulticastPkts", "IfInUcastPkts", "IfOutUcastPkts", "IfOutMulticastPkts", "IfOutBroadcastPkts", "IfOutDiscards", "IfOutErrors"}
 
 var log logger.Log
+var myCon *client.Client
 
 var chunkSize int
 var influxPort int
@@ -145,23 +146,7 @@ func appendPoints(points []client.Point, counters []Counters, i int) {
 }
 
 func insertIntoInflux(counters []Counters) {
-	strUrl := fmt.Sprintf("http://%s:%d", influxHost, influxPort)
-	u, err := url.Parse(strUrl)
-    conf := client.Config{
-        URL:      *u,
-        Username: "influx",
-        Password: "xulfni",
-    }
-	log.Info("InfluxDB Client: connecting to %s", strUrl)
-	con, err := client.NewClient(conf)
-	if err != nil {
-		log.Error(err)
-	}
-	dur, ver, err := con.Ping()
-	if err != nil {
-		    log.Error(err)
-	}
-	log.Info("InfluxDB Client: Happy as a hippo! Ping time: %v, Version: %s", dur, ver)
+	con := getInfluxClient()
 	chunk := len(counters)
 	log.Debug("allocate Point slice of size %d", (chunk * len(MetricFields)))
 	pts := make([]client.Point, chunk * len(MetricFields))
@@ -175,9 +160,42 @@ func insertIntoInflux(counters []Counters) {
 		RetentionPolicy: "default",
 	}
 	log.Info("InfluxDB Client: start inserting chunk")
-	_, err = con.Write(bps)
+	_, err := con.Write(bps)
 	if err != nil {
 		log.Error(err)
 	}
+}
 
+func getInfluxClient() client.Client {
+	if myCon != nil {
+		// Try to use cached/pooled connection
+		dur, ver, err := myCon.Ping()
+		if err == nil {
+			log.Debug("Using pooled connection")
+			log.Debug("InfluxDB Client: Happy as a hippo! Ping time: %v, Version: %s", dur, ver)
+			return *myCon
+		}
+		log.Warn("Ping on pooled conn yielded err %s", err)
+	}
+	// Either there was no connection, or Ping yielded an error
+	strUrl := fmt.Sprintf("http://%s:%d", influxHost, influxPort)
+	u, err := url.Parse(strUrl)
+	conf := client.Config{
+		URL:      *u,
+		Username: "influx",
+		Password: "xulfni",
+	}
+	log.Info("InfluxDB Client: Connecting to %s", strUrl)
+	con, err := client.NewClient(conf)
+	if err != nil {
+		log.Error(err)
+	}
+	dur, ver, err := con.Ping()
+	if err != nil {
+		log.Error(err)
+	}
+	// Set con on state, so it can be reused later
+	myCon = con
+	log.Info("InfluxDB Client: Happy as a hippo! Ping time: %v, Version: %s", dur, ver)
+	return *con
 }

@@ -1,1 +1,2 @@
-sflow2influx/sflow2influx
+*.swp
+sflux/sflux
