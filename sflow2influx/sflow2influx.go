@@ -174,10 +174,10 @@ func insertIntoInflux(counters []Counters) {
 		Database: influxDB,
 		RetentionPolicy: "default",
 	}
-	log.Info("InfluxDB Client: start inserting")
-	_, errar := con.Write(bps)
-	if errar != nil {
-		log.Error(errar)
+	log.Info("InfluxDB Client: start inserting chunk")
+	_, err = con.Write(bps)
+	if err != nil {
+		log.Error(err)
 	}
 
 }
