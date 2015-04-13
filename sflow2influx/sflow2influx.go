@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"net/url"
 	"github.com/influxdb/influxdb/client"
-	"github.com/wimtie/sflow/logger"
+	"github.com/wimtie/sflow-go/logger"
 )
 
 type Counters struct {
@@ -61,7 +61,7 @@ func main() {
 	flag.StringVar(&influxDB, "d", "", "Database to use")
 	flag.IntVar(&loglvl, "loglevel", 2, "Desired loglevel (ERROR=0, WARN=1, INFO=2, DEBUG=3), default = 2")
 	flag.Parse()
-	log.Warn(fmt.Sprintf("chunksize: %d", chunkSize))
+	log.Warn("chunksize: %d", chunkSize)
 	log.Warn(fmt.Sprintf("influxhost: %s", influxHost))
 	log.Warn(fmt.Sprintf("influxport: %d", influxPort))
 	log.Warn(fmt.Sprintf("influx database: %s", influxDB))
