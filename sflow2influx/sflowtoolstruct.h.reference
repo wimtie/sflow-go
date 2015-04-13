@@ -1,0 +1,21 @@
+typedef struct _SFLIf_counters {
+  uint32_t ifIndex;
+  uint32_t ifType;
+  uint64_t ifSpeed;
+  uint32_t ifDirection;        /* Derived from MAU MIB (RFC 2668) 0 = unknown, 1 = full-duplex, 2 = half-duplex, 3 = in, 4 = out */
+  uint32_t ifStatus;           /* bit field with the following bits assigned: bit 0 = ifAdminStatus (0 = down, 1 = up) bit 1 = ifOperStatus (0 = down, 1 = up) */
+  uint64_t ifInOctets;
+  uint32_t ifInUcastPkts;
+  uint32_t ifInMulticastPkts;
+  uint32_t ifInBroadcastPkts;
+  uint32_t ifInDiscards;
+  uint32_t ifInErrors;
+  uint32_t ifInUnknownProtos;
+  uint64_t ifOutOctets;
+  uint32_t ifOutUcastPkts;
+  uint32_t ifOutMulticastPkts;
+  uint32_t ifOutBroadcastPkts;
+  uint32_t ifOutDiscards;
+  uint32_t ifOutErrors;
+  uint32_t ifPromiscuousMode;
+} SFLIf_counters;
