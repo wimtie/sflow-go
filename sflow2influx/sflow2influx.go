@@ -128,7 +128,7 @@ func appendPoints(points []client.Point, counters []Counters, i int) {
 	for ii := range MetricFields {
 		fieldName := MetricFields[ii]
 		cVal := reflect.Indirect(instVal).FieldByName(fieldName).Int()
-		log.Debug("CREATE POINT #%d, counter: %s source:%s ifindex:%d: value:%d\n", i * len(MetricFields) + ii, fieldName, inst.Source, inst.IfIndex, cVal)
+		log.Debug("CREATE POINT #%d, counter: %s source:%s ifindex:%d: value:%d", i * len(MetricFields) + ii, fieldName, inst.Source, inst.IfIndex, cVal)
 		points[i * len(MetricFields) + ii] = client.Point {
 			Name: fieldName,
 			Tags: map[string]string {
@@ -152,7 +152,7 @@ func insertIntoInflux(counters []Counters) {
         Username: "influx",
         Password: "xulfni",
     }
-	log.Info("InfluxDB Client: connecting to %s\n", strUrl)
+	log.Info("InfluxDB Client: connecting to %s", strUrl)
 	con, err := client.NewClient(conf)
 	if err != nil {
 		log.Error(err)
@@ -174,7 +174,7 @@ func insertIntoInflux(counters []Counters) {
 		Database: influxDB,
 		RetentionPolicy: "default",
 	}
-	log.Info("InfluxDB Client: start inserting\n")
+	log.Info("InfluxDB Client: start inserting")
 	_, errar := con.Write(bps)
 	if errar != nil {
 		log.Error(errar)
