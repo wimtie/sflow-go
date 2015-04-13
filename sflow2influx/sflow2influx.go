@@ -138,7 +138,7 @@ func appendPoints(points []client.Point, counters []Counters, i int) {
 			Fields: map[string]interface{} {
 				"value": cVal,
 			},
-			Timestamp: inst.TimeStamp, // TODOOOOO: Doe een timestamp in de struct,
+			Timestamp: inst.TimeStamp,
 			Precision: "s",
 		}
 	}
