@@ -151,7 +151,7 @@ func insertIntoInflux(counters []Counters) {
         Username: "influx",
         Password: "xulfni",
     }
-	log.Info(fmt.Sprintf("InfluxDB Client: connecting to %s\n", strUrl))
+	log.Info("InfluxDB Client: connecting to %s\n", strUrl)
 	con, err := client.NewClient(conf)
 	if err != nil {
 		log.Error(err)
@@ -160,7 +160,7 @@ func insertIntoInflux(counters []Counters) {
 	if err != nil {
 		    log.Error(err)
 	}
-	log.Info(fmt.Sprintf("InfluxDB Client: Happy as a hippo! %v, %s\n", dur, ver))
+	log.Info("InfluxDB Client: Happy as a hippo! %v, %s\n", dur, ver)
 	chunk := len(counters)
 	log.Debug("allocate Point slice of size %d", (chunk * len(MetricFields)))
 	pts := make([]client.Point, chunk * len(MetricFields))
@@ -173,7 +173,7 @@ func insertIntoInflux(counters []Counters) {
 		Database: influxDB,
 		RetentionPolicy: "default",
 	}
-	log.Info(fmt.Sprintf("InfluxDB Client: start inserting\n"))
+	log.Info("InfluxDB Client: start inserting\n")
 	_, errar := con.Write(bps)
 	if errar != nil {
 		log.Error(errar)
