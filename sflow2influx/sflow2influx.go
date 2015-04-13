@@ -61,10 +61,11 @@ func main() {
 	flag.IntVar(&loglvl, "loglevel", 2, "Desired loglevel (ERROR=0, WARN=1, INFO=2, DEBUG=3), default = 2")
 	flag.Parse()
 	log = logger.NewLog(loglvl)
-	log.Warn("chunksize: %d", chunkSize)
-	log.Warn("influxhost: %s", influxHost)
-	log.Warn("influxport: %d", influxPort)
-	log.Warn("influx database: %s", influxDB)
+	log.Info("loglevel: %d", loglvl)
+	log.Info("chunksize: %d", chunkSize)
+	log.Info("influxhost: %s", influxHost)
+	log.Info("influxport: %d", influxPort)
+	log.Info("influx database: %s", influxDB)
 	run()
 }
 
