@@ -44,6 +44,8 @@ var log logger.Log
 var myCon *client.Client
 
 var chunkSize int
+var influxUser string
+var influxPassword string
 var influxPort int
 var influxHost string
 var influxDB string
@@ -57,6 +59,8 @@ func getInt(cols []string, index int) int64 {
 func main() {
 	flag.IntVar(&chunkSize, "chunksize", 100, "Chunk size for counter packages written to database per batch, default=100")
 	flag.IntVar(&influxPort, "p", 8086, "Port to connect to InfluxDB, default=8086")
+	flag.StringVar(&influxUser, "u", "", "InfluxDB username")
+	flag.StringVar(&influxPassword, "password", "", "InfluxDB password")
 	flag.StringVar(&influxHost, "h", "localhost", "Host to connect to InfluxDB, default=localhost")
 	flag.StringVar(&influxDB, "d", "", "Database to use")
 	flag.IntVar(&loglvl, "loglevel", 2, "Desired loglevel (ERROR=0, WARN=1, INFO=2, DEBUG=3), default = 2")
@@ -122,10 +126,8 @@ func scanN(scanner *bufio.Scanner, n int) []Counters {
 	return all
 }
 
-func appendPoints(points []client.Point, counters []Counters, i int) {
-	inst := counters[i]
+func appendPoints(points []client.Point, inst Counters) {
 	instVal := reflect.ValueOf(inst)
-	log.Debug("process line: %d", i)
 	for ii := range MetricFields {
 		fieldName := MetricFields[ii]
 		cVal := reflect.Indirect(instVal).FieldByName(fieldName).Int()
@@ -149,9 +151,10 @@ func insertIntoInflux(counters []Counters) {
 	chunk := len(counters)
 	log.Debug("allocate Point slice of size %d", (chunk * len(MetricFields)))
 	pts := make([]client.Point, chunk * len(MetricFields))
-	//var pts []client.Point
 	for i := 0; i < chunk; i++ {
-		appendPoints(pts, counters, i)
+		log.Debug("process line: %d", i)
+		inst := counters[i]
+		appendPoints(pts, inst)
 	}
 	bps := client.BatchPoints {
 		Points: pts,
@@ -182,8 +185,8 @@ func getInfluxClient() client.Client {
 	u, err := url.Parse(strUrl)
 	conf := client.Config{
 		URL:      *u,
-		Username: "influx",
-		Password: "xulfni",
+		Username: influxUser,
+		Password: influxPassword,
 	}
 	log.Info("InfluxDB Client: Connecting to %s", strUrl)
 	con, err := client.NewClient(conf)
