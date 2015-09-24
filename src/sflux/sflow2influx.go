@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"net/url"
 	"github.com/influxdb/influxdb/client"
-	"github.com/wimtie/sflow-go/logger"
+	"sflux/logger"
 )
 
 type Counters struct {
