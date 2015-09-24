@@ -1,2 +1,11 @@
 *.swp
 sflux/sflux
+pkg/
+
+# The built binary itself
+sflux
+
+# Imported packages
+src/github.com/
+src/9fans.net/
+src/golang.org/
